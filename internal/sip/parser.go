@@ -1,14 +1,16 @@
 package sip
 
 import (
+	"strconv"
 	"strings"
 )
 
 type Message struct {
-	Method  string
-	Headers map[string]string
-	Body    string
-	Raw     string
+	Method     string
+	StatusCode int
+	Headers    map[string]string
+	Body       string
+	Raw        string
 }
 
 func ParseMessage(data []byte) *Message {
@@ -21,7 +23,11 @@ func ParseMessage(data []byte) *Message {
 	}
 
 	if strings.HasPrefix(lines[0], "SIP/2.0") {
-		msg.Method = "Response"
+		msg.Method = "RESPONSE"
+		parts := strings.Split(lines[0], " ")
+		if len(parts) >= 2 {
+			msg.StatusCode, _ = strconv.Atoi(parts[1])
+		}
 	} else {
 		parts := strings.Split(lines[0], " ")
 		msg.Method = parts[0]

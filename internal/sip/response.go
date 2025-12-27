@@ -3,6 +3,8 @@ package sip
 import (
 	"fmt"
 	"strings"
+
+	"github.com/google/uuid"
 )
 
 func BuildResponse(
@@ -33,4 +35,17 @@ func addToTag(to string) string {
 		return to
 	}
 	return to + ";tag=server123" // todo: needs to be dynamic
+}
+
+func generateBranch() string {
+	return "z9hG4bKproxy-" + uuid.New().String()
+}
+
+func buildProxyVia(proxyIp string, proxyPort int) string {
+	return fmt.Sprintf(
+		"SIP/2.0/UDP %s:%d;branch=%s",
+		proxyIp,
+		proxyPort,
+		generateBranch(),
+	)
 }
